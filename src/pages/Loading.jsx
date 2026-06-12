@@ -68,7 +68,7 @@ const Loading = () => {
       {/* Warehouse Stock Cards */}
       <div style={{ marginBottom: '2rem' }}>
         <h2 style={{ color: 'white', fontSize: '1rem', fontWeight: 600, marginBottom: '1rem' }}>
-          🏭 Warehouse / Bail Stock
+           Warehouse / Bail Stock
         </h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
           {stock.map(depot => {
@@ -142,11 +142,11 @@ const Loading = () => {
                 <tr key={log.id} style={{ borderBottom: i < logs.length - 1 ? '1px solid #0f172a' : 'none' }}>
                   <td style={{ padding: '1rem 1.25rem', color: '#a78bfa', fontWeight: 600 }}>{log.id}</td>
                   <td style={{ padding: '1rem 1.25rem', color: '#94a3b8' }}>{log.date}</td>
-                  <td style={{ padding: '1rem 1.25rem', color: '#60a5fa', fontWeight: 600 }}>⏰ {log.time}</td>
+                  <td style={{ padding: '1rem 1.25rem', color: '#60a5fa', fontWeight: 600 }}>{log.time}</td>
                   <td style={{ padding: '1rem 1.25rem', color: '#e2e8f0' }}>{log.plateNumber}</td>
                   <td style={{ padding: '1rem 1.25rem', color: '#94a3b8' }}>{log.driver}</td>
                   <td style={{ padding: '1rem 1.25rem', color: '#4ade80', fontWeight: 700 }}>
-                    📦 {log.bagsLoaded.toLocaleString()} bags
+                    {log.bagsLoaded.toLocaleString()} bags
                   </td>
                   <td style={{ padding: '1rem 1.25rem', color: '#94a3b8' }}>{log.destination}</td>
                   <td style={{ padding: '1rem 1.25rem', color: '#60a5fa' }}>{log.tripId || '-'}</td>
