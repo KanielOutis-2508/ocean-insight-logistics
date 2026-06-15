@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { messages } from '../data/mockData';
 import { Send } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 const Chat = () => {
+  const { colors } = useTheme();
   const [msgList, setMsgList] = useState(messages);
   const [text, setText] = useState('');
-  const [role] = useState('manager'); // will be dynamic later
+  const [role] = useState('manager');
 
   const handleSend = () => {
     if (!text.trim()) return;
@@ -22,17 +24,18 @@ const Chat = () => {
   };
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '900px', margin: '0 auto' }}>
+    <div style={{ padding: '1.5rem', maxWidth: '900px', margin: '0 auto' }}>
       <div style={{ marginBottom: '1.5rem' }}>
-        <h1 style={{ color: 'white', fontSize: '1.5rem', fontWeight: 700 }}>Fleet Chat</h1>
-        <p style={{ color: '#475569', fontSize: '0.875rem' }}>Communication between manager and staff</p>
+        <h1 style={{ color: colors.text, fontSize: '1.5rem', fontWeight: 700 }}>Fleet Chat</h1>
+        <p style={{ color: colors.textMuted, fontSize: '0.875rem' }}>Communication between manager and staff</p>
       </div>
 
-      {/* Chat Box */}
       <div style={{
-        background: '#0f172a', borderRadius: '12px',
-        border: '1px solid #1e293b', overflow: 'hidden',
-        display: 'flex', flexDirection: 'column', height: '600px',
+        background: colors.cardBg,
+        borderRadius: '12px',
+        border: `1px solid ${colors.border}`,
+        overflow: 'hidden',
+        display: 'flex', flexDirection: 'column', height: '70vh',
       }}>
         {/* Messages */}
         <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -43,16 +46,16 @@ const Chat = () => {
                 display: 'flex', flexDirection: 'column',
                 alignItems: isMe ? 'flex-end' : 'flex-start',
               }}>
-                {/* Sender name */}
-                <div style={{ color: '#475569', fontSize: '0.72rem', marginBottom: '0.25rem', paddingLeft: isMe ? 0 : '0.5rem', paddingRight: isMe ? '0.5rem' : 0 }}>
+                <div style={{ color: colors.textMuted, fontSize: '0.72rem', marginBottom: '0.25rem', paddingLeft: isMe ? 0 : '0.5rem', paddingRight: isMe ? '0.5rem' : 0 }}>
                   {msg.senderName} · {msg.time}
                 </div>
-                {/* Bubble */}
                 <div style={{
-                  maxWidth: '70%', padding: '0.75rem 1rem',
+                  maxWidth: '75%', padding: '0.75rem 1rem',
                   borderRadius: isMe ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
-                  background: isMe ? 'linear-gradient(135deg, #1d4ed8, #3b82f6)' : '#1e293b',
-                  color: 'white', fontSize: '0.875rem', lineHeight: 1.5,
+                  background: isMe ? 'linear-gradient(135deg, #1d4ed8, #3b82f6)' : colors.cardBg2,
+                  color: isMe ? 'white' : colors.text,
+                  fontSize: '0.875rem', lineHeight: 1.5,
+                  border: isMe ? 'none' : `1px solid ${colors.border}`,
                 }}>
                   {msg.text}
                 </div>
@@ -63,8 +66,9 @@ const Chat = () => {
 
         {/* Input */}
         <div style={{
-          borderTop: '1px solid #1e293b', padding: '1rem 1.5rem',
+          borderTop: `1px solid ${colors.border}`, padding: '1rem 1.5rem',
           display: 'flex', gap: '0.75rem', alignItems: 'center',
+          background: colors.cardBg,
         }}>
           <input
             value={text}
@@ -73,8 +77,8 @@ const Chat = () => {
             placeholder="Type a message..."
             style={{
               flex: 1, padding: '0.65rem 1rem',
-              background: '#1e293b', border: '1px solid #334155',
-              borderRadius: '8px', color: 'white', fontSize: '0.875rem', outline: 'none',
+              background: colors.input, border: `1px solid ${colors.inputBorder}`,
+              borderRadius: '8px', color: colors.text, fontSize: '0.875rem', outline: 'none',
             }}
           />
           <button
@@ -84,6 +88,7 @@ const Chat = () => {
               background: 'linear-gradient(135deg, #1d4ed8, #3b82f6)',
               border: 'none', cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
+              flexShrink: 0,
             }}
           >
             <Send size={18} color="white" />

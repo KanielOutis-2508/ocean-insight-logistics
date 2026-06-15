@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { trips, trucks } from '../data/mockData';
 import StatusBadge from '../components/StatusBadge';
 import { Plus, X, Search } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 const Trips = () => {
+  const { colors } = useTheme();
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
   const [showModal, setShowModal] = useState(false);
@@ -45,14 +47,25 @@ const Trips = () => {
 
   const filters = ['all', 'in-transit', 'delivered', 'pending'];
 
+  const inputStyle = {
+    width: '100%', padding: '0.6rem 0.75rem',
+    background: colors.input, border: `1px solid ${colors.inputBorder}`,
+    borderRadius: '6px', color: colors.text, fontSize: '0.875rem', outline: 'none',
+  };
+
+  const labelStyle = {
+    color: colors.textLight, fontSize: '0.75rem', fontWeight: 600,
+    textTransform: 'uppercase', display: 'block', marginBottom: '0.4rem',
+  };
+
   return (
-    <div style={{ padding: '2rem', maxWidth: '1400px', margin: '0 auto' }}>
+    <div style={{ padding: '1.5rem', maxWidth: '1400px', margin: '0 auto' }}>
 
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 style={{ color: 'white', fontSize: '1.5rem', fontWeight: 700 }}>Trip Management</h1>
-          <p style={{ color: '#475569', fontSize: '0.875rem' }}>{filtered.length} trips found</p>
+          <h1 style={{ color: colors.text, fontSize: '1.5rem', fontWeight: 700 }}>Trip Management</h1>
+          <p style={{ color: colors.textMuted, fontSize: '0.875rem' }}>{filtered.length} trips found</p>
         </div>
         <button
           onClick={() => setShowModal(true)}
@@ -71,15 +84,15 @@ const Trips = () => {
       {/* Search and Filter */}
       <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
         <div style={{ position: 'relative', flex: 1, minWidth: '200px' }}>
-          <Search size={16} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#475569' }} />
+          <Search size={16} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: colors.textMuted }} />
           <input
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search trips..."
             style={{
               width: '100%', padding: '0.6rem 0.75rem 0.6rem 2.25rem',
-              background: '#0f172a', border: '1px solid #1e293b',
-              borderRadius: '8px', color: 'white', fontSize: '0.875rem', outline: 'none',
+              background: colors.input, border: `1px solid ${colors.inputBorder}`,
+              borderRadius: '8px', color: colors.text, fontSize: '0.875rem', outline: 'none',
             }}
           />
         </div>
@@ -90,9 +103,9 @@ const Trips = () => {
               onClick={() => setFilter(f)}
               style={{
                 padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer',
-                border: filter === f ? '1px solid #3b82f6' : '1px solid #1e293b',
-                background: filter === f ? '#1e40af' : '#0f172a',
-                color: filter === f ? 'white' : '#64748b',
+                border: filter === f ? '1px solid #3b82f6' : `1px solid ${colors.border}`,
+                background: filter === f ? '#1e40af' : colors.cardBg,
+                color: filter === f ? 'white' : colors.textLight,
                 fontSize: '0.8rem', fontWeight: 500, textTransform: 'capitalize',
               }}
             >
@@ -103,34 +116,32 @@ const Trips = () => {
       </div>
 
       {/* Table */}
-      <div style={{
-        background: '#0f172a', borderRadius: '12px',
-        border: '1px solid #1e293b', overflow: 'hidden',
-      }}>
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
+      <div style={{ background: colors.cardBg, borderRadius: '12px', border: `1px solid ${colors.border}`, overflow: 'hidden' }}>
+        <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem', minWidth: '750px' }}>
             <thead>
-              <tr style={{ borderBottom: '1px solid #1e293b' }}>
+              <tr style={{ borderBottom: `1px solid ${colors.border}` }}>
                 {['Trip ID', 'Driver', 'Plate', 'Route', 'Cargo', 'Departure', 'ETA', 'Revenue', 'Status'].map(h => (
                   <th key={h} style={{
                     padding: '0.75rem 1.25rem', textAlign: 'left',
-                    color: '#475569', fontWeight: 600, fontSize: '0.72rem',
+                    color: colors.tableHeader, fontWeight: 600, fontSize: '0.72rem',
                     textTransform: 'uppercase', letterSpacing: '0.05em', whiteSpace: 'nowrap',
+                    background: colors.tableHeaderBg,
                   }}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {filtered.map((trip, i) => (
-                <tr key={trip.id} style={{ borderBottom: i < filtered.length - 1 ? '1px solid #0f172a' : 'none' }}>
-                  <td style={{ padding: '1rem 1.25rem', color: '#60a5fa', fontWeight: 600 }}>{trip.id}</td>
-                  <td style={{ padding: '1rem 1.25rem', color: '#e2e8f0' }}>{trip.driver}</td>
-                  <td style={{ padding: '1rem 1.25rem', color: '#94a3b8' }}>{trip.plateNumber}</td>
-                  <td style={{ padding: '1rem 1.25rem', color: '#94a3b8', whiteSpace: 'nowrap' }}>{trip.origin} → {trip.destination}</td>
-                  <td style={{ padding: '1rem 1.25rem', color: '#94a3b8' }}>{trip.cargo} ({trip.bags} bags)</td>
-                  <td style={{ padding: '1rem 1.25rem', color: '#94a3b8', whiteSpace: 'nowrap' }}>{trip.departureDate}</td>
-                  <td style={{ padding: '1rem 1.25rem', color: '#94a3b8', whiteSpace: 'nowrap' }}>{trip.expectedArrival}</td>
-                  <td style={{ padding: '1rem 1.25rem', color: '#4ade80', fontWeight: 600 }}>₦{trip.revenue.toLocaleString()}</td>
+                <tr key={trip.id} style={{ borderBottom: i < filtered.length - 1 ? `1px solid ${colors.border}` : 'none' }}>
+                  <td style={{ padding: '1rem 1.25rem', color: '#60a5fa', fontWeight: 600, whiteSpace: 'nowrap' }}>{trip.id}</td>
+                  <td style={{ padding: '1rem 1.25rem', color: colors.text, whiteSpace: 'nowrap' }}>{trip.driver}</td>
+                  <td style={{ padding: '1rem 1.25rem', color: colors.textLight, whiteSpace: 'nowrap' }}>{trip.plateNumber}</td>
+                  <td style={{ padding: '1rem 1.25rem', color: colors.textLight, whiteSpace: 'nowrap' }}>{trip.origin} → {trip.destination}</td>
+                  <td style={{ padding: '1rem 1.25rem', color: colors.textLight, whiteSpace: 'nowrap' }}>{trip.cargo} ({trip.bags} bags)</td>
+                  <td style={{ padding: '1rem 1.25rem', color: colors.textLight, whiteSpace: 'nowrap' }}>{trip.departureDate}</td>
+                  <td style={{ padding: '1rem 1.25rem', color: colors.textLight, whiteSpace: 'nowrap' }}>{trip.expectedArrival}</td>
+                  <td style={{ padding: '1rem 1.25rem', color: '#4ade80', fontWeight: 600, whiteSpace: 'nowrap' }}>₦{trip.revenue.toLocaleString()}</td>
                   <td style={{ padding: '1rem 1.25rem' }}><StatusBadge status={trip.status} /></td>
                 </tr>
               ))}
@@ -139,24 +150,14 @@ const Trips = () => {
         </div>
       </div>
 
-      {/* Add Trip Modal */}
+      {/* Modal */}
       {showModal && (
-        <div style={{
-          position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.7)',
-          zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem',
-        }}>
-          <div style={{
-            background: '#0f172a', borderRadius: '16px', padding: '2rem',
-            width: '100%', maxWidth: '560px', border: '1px solid #1e293b',
-            maxHeight: '90vh', overflowY: 'auto',
-          }}>
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+          <div style={{ background: colors.modalBg, borderRadius: '16px', padding: '2rem', width: '100%', maxWidth: '560px', border: `1px solid ${colors.border}`, maxHeight: '90vh', overflowY: 'auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
-              <h2 style={{ color: 'white', fontSize: '1.1rem', fontWeight: 700 }}>Add New Trip</h2>
-              <button onClick={() => setShowModal(false)} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}>
-                <X size={20} />
-              </button>
+              <h2 style={{ color: colors.text, fontSize: '1.1rem', fontWeight: 700 }}>Add New Trip</h2>
+              <button onClick={() => setShowModal(false)} style={{ background: 'none', border: 'none', color: colors.textLight, cursor: 'pointer' }}><X size={20} /></button>
             </div>
-
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               {[
                 { label: 'Driver Name', key: 'driver', placeholder: 'e.g. Emeka Okafor' },
@@ -169,52 +170,20 @@ const Trips = () => {
                 { label: 'Expected Arrival', key: 'expectedArrival', type: 'date' },
               ].map(field => (
                 <div key={field.key}>
-                  <label style={{ color: '#94a3b8', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', display: 'block', marginBottom: '0.4rem' }}>
-                    {field.label}
-                  </label>
-                  <input
-                    type={field.type || 'text'}
-                    placeholder={field.placeholder}
-                    value={form[field.key]}
-                    onChange={e => setForm({ ...form, [field.key]: e.target.value })}
-                    style={{
-                      width: '100%', padding: '0.6rem 0.75rem',
-                      background: '#1e293b', border: '1px solid #334155',
-                      borderRadius: '6px', color: 'white', fontSize: '0.875rem', outline: 'none',
-                    }}
-                  />
+                  <label style={labelStyle}>{field.label}</label>
+                  <input type={field.type || 'text'} placeholder={field.placeholder} value={form[field.key]} onChange={e => setForm({ ...form, [field.key]: e.target.value })} style={inputStyle} />
                 </div>
               ))}
-
               <div>
-                <label style={{ color: '#94a3b8', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', display: 'block', marginBottom: '0.4rem' }}>
-                  Status
-                </label>
-                <select
-                  value={form.status}
-                  onChange={e => setForm({ ...form, status: e.target.value })}
-                  style={{
-                    width: '100%', padding: '0.6rem 0.75rem',
-                    background: '#1e293b', border: '1px solid #334155',
-                    borderRadius: '6px', color: 'white', fontSize: '0.875rem', outline: 'none',
-                  }}
-                >
+                <label style={labelStyle}>Status</label>
+                <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value })} style={inputStyle}>
                   <option value="pending">Pending</option>
                   <option value="in-transit">In Transit</option>
                   <option value="delivered">Delivered</option>
                 </select>
               </div>
             </div>
-
-            <button
-              onClick={handleAdd}
-              style={{
-                width: '100%', marginTop: '1.5rem', padding: '0.75rem',
-                background: 'linear-gradient(135deg, #1d4ed8, #3b82f6)',
-                color: 'white', border: 'none', borderRadius: '8px',
-                fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer',
-              }}
-            >
+            <button onClick={handleAdd} style={{ width: '100%', marginTop: '1.5rem', padding: '0.75rem', background: 'linear-gradient(135deg, #1d4ed8, #3b82f6)', color: 'white', border: 'none', borderRadius: '8px', fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer' }}>
               Add Trip
             </button>
           </div>

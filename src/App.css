@@ -39,3 +39,105 @@ body {
     display: block !important;
   }
 }
+/* MOBILE RESPONSIVE */
+@media (max-width: 768px) {
+  /* Navbar */
+  .desktop-nav {
+    display: none !important;
+  }
+
+  .mobile-menu-btn {
+    display: block !important;
+  }
+
+  /* General padding */
+  div[style*="padding: 2rem"] {
+    padding: 1rem !important;
+  }
+
+  /* Stats grid */
+  div[style*="gridTemplateColumns: repeat(auto-fit, minmax(180px"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  div[style*="gridTemplateColumns: repeat(auto-fit, minmax(200px"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  div[style*="gridTemplateColumns: repeat(auto-fit, minmax(280px"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  div[style*="gridTemplateColumns: repeat(auto-fill, minmax(280px"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  div[style*="gridTemplateColumns: repeat(auto-fill, minmax(300px"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Two column layouts */
+  div[style*="gridTemplateColumns: 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Tables scroll */
+  div[style*="overflowX: auto"] {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    min-width: 600px;
+  }
+
+  /* Page headers */
+  div[style*="justifyContent: space-between"][style*="alignItems: center"] {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.75rem !important;
+  }
+
+  /* Warehouse stock cards progress */
+  div[style*="gridTemplateColumns: 1fr 1fr 1fr"] {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  /* Chat height */
+  div[style*="height: 600px"] {
+    height: 70vh !important;
+  }
+
+  /* Filter buttons wrap */
+  div[style*="display: flex"][style*="gap: 0.5rem"] {
+    flex-wrap: wrap !important;
+  }
+
+  /* Modal full width */
+  div[style*="maxWidth: 560px"],
+  div[style*="maxWidth: 480px"],
+  div[style*="maxWidth: 420px"] {
+    width: 95% !important;
+    margin: 0 auto !important;
+  }
+
+  /* Map height */
+  div[style*="height: 450px"] {
+    height: 300px !important;
+  }
+
+  /* Navbar brand on mobile */
+  .navbar-brand-text {
+    font-size: 0.85rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  div[style*="gridTemplateColumns: repeat(auto-fit, minmax(180px"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  div[style*="gridTemplateColumns: repeat(2, 1fr)"] {
+    grid-template-columns: 1fr !important;
+  }
+}

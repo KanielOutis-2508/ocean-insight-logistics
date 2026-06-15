@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { truckDocuments } from '../data/mockData';
-import { AlertTriangle, CheckCircle, Clock } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 const Documents = () => {
-  const [docs, setDocs] = useState(truckDocuments);
+  const { colors } = useTheme();
+  const [docs] = useState(truckDocuments);
 
   const getStatus = (dateStr) => {
     const today = new Date();
@@ -23,20 +25,20 @@ const Documents = () => {
   });
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '1400px', margin: '0 auto' }}>
+    <div style={{ padding: '1.5rem', maxWidth: '1400px', margin: '0 auto' }}>
 
       {/* Header */}
-      <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ color: 'white', fontSize: '1.5rem', fontWeight: 700 }}>Truck Documents</h1>
-        <p style={{ color: '#475569', fontSize: '0.875rem' }}>Track registration and document expiry dates</p>
+      <div style={{ marginBottom: '1.5rem' }}>
+        <h1 style={{ color: colors.text, fontSize: '1.5rem', fontWeight: 700 }}>Truck Documents</h1>
+        <p style={{ color: colors.textMuted, fontSize: '0.875rem' }}>Track registration and document expiry dates</p>
       </div>
 
       {/* Alert banner */}
       {expiringSoon.length > 0 && (
         <div style={{
           background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)',
-          borderRadius: '10px', padding: '1rem 1.5rem', marginBottom: '2rem',
-          display: 'flex', alignItems: 'center', gap: '0.75rem',
+          borderRadius: '10px', padding: '1rem 1.5rem', marginBottom: '1.5rem',
+          display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap',
         }}>
           <AlertTriangle size={20} color="#ef4444" />
           <span style={{ color: '#fca5a5', fontSize: '0.875rem', fontWeight: 600 }}>
@@ -45,17 +47,74 @@ const Documents = () => {
         </div>
       )}
 
-      {/* Documents Table */}
-      <div style={{ background: '#0f172a', borderRadius: '12px', border: '1px solid #1e293b', overflow: 'hidden' }}>
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
+      {/* Cards view - shows on all screens */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+        {docs.map(doc => {
+          const rw = getStatus(doc.roadWorthiness);
+          const vl = getStatus(doc.vehicleLicence);
+          const ins = getStatus(doc.insurance);
+          const hasAlert = [rw, vl, ins].some(s => s.days <= 30);
+
+          return (
+            <div key={doc.truckId} style={{
+              background: colors.cardBg,
+              borderRadius: '12px', padding: '1.25rem',
+              border: hasAlert ? '1px solid rgba(239,68,68,0.4)' : `1px solid ${colors.border}`,
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', alignItems: 'flex-start' }}>
+                <div>
+                  <div style={{ color: '#60a5fa', fontWeight: 700, fontSize: '1rem' }}>{doc.plateNumber}</div>
+                  <div style={{ color: colors.textMuted, fontSize: '0.75rem', marginTop: '0.2rem' }}>{doc.driver} · {doc.truckId}</div>
+                </div>
+                {hasAlert && <AlertTriangle size={18} color="#ef4444" />}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                {[
+                  { label: 'Road Worthiness', status: rw, date: doc.roadWorthiness },
+                  { label: 'Vehicle Licence', status: vl, date: doc.vehicleLicence },
+                  { label: 'Insurance', status: ins, date: doc.insurance },
+                ].map(item => (
+                  <div key={item.label} style={{
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                    padding: '0.5rem 0.75rem', borderRadius: '6px', background: colors.cardBg2,
+                    flexWrap: 'wrap', gap: '0.25rem',
+                  }}>
+                    <span style={{ color: colors.textLight, fontSize: '0.75rem' }}>{item.label}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <span style={{ color: colors.textMuted, fontSize: '0.72rem' }}>{item.date}</span>
+                      <span style={{
+                        padding: '0.15rem 0.5rem', borderRadius: '20px',
+                        fontSize: '0.7rem', fontWeight: 600,
+                        backgroundColor: item.status.bg, color: item.status.color,
+                        border: `1px solid ${item.status.color}40`,
+                        whiteSpace: 'nowrap',
+                      }}>
+                        {item.status.icon} {item.status.label}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Table view - scrollable */}
+      <div style={{ background: colors.cardBg, borderRadius: '12px', border: `1px solid ${colors.border}`, overflow: 'hidden' }}>
+        <div style={{ padding: '1rem 1.5rem', borderBottom: `1px solid ${colors.border}` }}>
+          <h2 style={{ color: colors.text, fontSize: '0.95rem', fontWeight: 600 }}>Full Document Table</h2>
+        </div>
+        <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem', minWidth: '650px' }}>
             <thead>
-              <tr style={{ borderBottom: '1px solid #1e293b' }}>
+              <tr style={{ borderBottom: `1px solid ${colors.border}` }}>
                 {['Truck', 'Driver', 'Road Worthiness', 'Vehicle Licence', 'Insurance'].map(h => (
                   <th key={h} style={{
                     padding: '0.75rem 1.5rem', textAlign: 'left',
-                    color: '#475569', fontWeight: 600, fontSize: '0.72rem',
+                    color: colors.tableHeader, fontWeight: 600, fontSize: '0.72rem',
                     textTransform: 'uppercase', letterSpacing: '0.05em', whiteSpace: 'nowrap',
+                    background: colors.tableHeaderBg,
                   }}>{h}</th>
                 ))}
               </tr>
@@ -66,19 +125,19 @@ const Documents = () => {
                 const vl = getStatus(doc.vehicleLicence);
                 const ins = getStatus(doc.insurance);
                 return (
-                  <tr key={doc.truckId} style={{ borderBottom: i < docs.length - 1 ? '1px solid #0f172a' : 'none' }}>
+                  <tr key={doc.truckId} style={{ borderBottom: i < docs.length - 1 ? `1px solid ${colors.border}` : 'none' }}>
                     <td style={{ padding: '1rem 1.5rem' }}>
-                      <div style={{ color: '#60a5fa', fontWeight: 700 }}>{doc.plateNumber}</div>
-                      <div style={{ color: '#475569', fontSize: '0.75rem' }}>{doc.truckId}</div>
+                      <div style={{ color: '#60a5fa', fontWeight: 700, whiteSpace: 'nowrap' }}>{doc.plateNumber}</div>
+                      <div style={{ color: colors.textMuted, fontSize: '0.75rem' }}>{doc.truckId}</div>
                     </td>
-                    <td style={{ padding: '1rem 1.5rem', color: '#e2e8f0' }}>{doc.driver}</td>
+                    <td style={{ padding: '1rem 1.5rem', color: colors.text, whiteSpace: 'nowrap' }}>{doc.driver}</td>
                     {[
                       { date: doc.roadWorthiness, status: rw },
                       { date: doc.vehicleLicence, status: vl },
                       { date: doc.insurance, status: ins },
                     ].map((item, idx) => (
-                      <td key={idx} style={{ padding: '1rem 1.5rem' }}>
-                        <div style={{ color: '#94a3b8', fontSize: '0.8rem', marginBottom: '0.3rem' }}>{item.date}</div>
+                      <td key={idx} style={{ padding: '1rem 1.5rem', whiteSpace: 'nowrap' }}>
+                        <div style={{ color: colors.textLight, fontSize: '0.8rem', marginBottom: '0.3rem' }}>{item.date}</div>
                         <span style={{
                           padding: '0.2rem 0.6rem', borderRadius: '20px',
                           fontSize: '0.72rem', fontWeight: 600,
@@ -94,56 +153,6 @@ const Documents = () => {
               })}
             </tbody>
           </table>
-        </div>
-      </div>
-
-      {/* Cards view */}
-      <div style={{ marginTop: '2rem' }}>
-        <h2 style={{ color: 'white', fontSize: '1rem', fontWeight: 600, marginBottom: '1rem' }}>
-          Document Status Overview
-        </h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
-          {docs.map(doc => {
-            const rw = getStatus(doc.roadWorthiness);
-            const vl = getStatus(doc.vehicleLicence);
-            const ins = getStatus(doc.insurance);
-            const hasAlert = [rw, vl, ins].some(s => s.days <= 30);
-
-            return (
-              <div key={doc.truckId} style={{
-                background: 'linear-gradient(135deg, #0f172a, #1e293b)',
-                borderRadius: '12px', padding: '1.25rem',
-                border: hasAlert ? '1px solid rgba(239,68,68,0.4)' : '1px solid #1e293b',
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                  <div>
-                    <div style={{ color: 'white', fontWeight: 700 }}>{doc.plateNumber}</div>
-                    <div style={{ color: '#64748b', fontSize: '0.75rem' }}>{doc.driver}</div>
-                  </div>
-                  {hasAlert && <AlertTriangle size={18} color="#ef4444" />}
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  {[
-                    { label: 'Road Worthiness', status: rw, date: doc.roadWorthiness },
-                    { label: 'Vehicle Licence', status: vl, date: doc.vehicleLicence },
-                    { label: 'Insurance', status: ins, date: doc.insurance },
-                  ].map(item => (
-                    <div key={item.label} style={{
-                      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                      padding: '0.5rem 0.75rem', borderRadius: '6px', background: '#0f172a',
-                    }}>
-                      <span style={{ color: '#64748b', fontSize: '0.75rem' }}>{item.label}</span>
-                      <span style={{
-                        fontSize: '0.72rem', fontWeight: 600, color: item.status.color,
-                      }}>
-                        {item.status.icon} {item.date}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
         </div>
       </div>
     </div>

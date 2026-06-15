@@ -1,10 +1,12 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Truck, Route, Fuel, FileText, Package, MessageCircle, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Truck, Route, Fuel, FileText, Package, MessageCircle, Menu, X, Sun, Moon } from 'lucide-react';
 import { useState } from 'react';
+import { useTheme } from '../context/ThemeContext';
 
 const Navbar = () => {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { isDark, toggleTheme, colors } = useTheme();
 
   const links = [
     { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={16} /> },
@@ -18,8 +20,8 @@ const Navbar = () => {
 
   return (
     <nav style={{
-      background: '#0a0f1e',
-      borderBottom: '1px solid #1e293b',
+      background: colors.navBg,
+      borderBottom: `1px solid ${colors.border}`,
       padding: '0 2rem',
       display: 'flex',
       alignItems: 'center',
@@ -28,7 +30,8 @@ const Navbar = () => {
       position: 'sticky',
       top: 0,
       zIndex: 1000,
-      boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+      boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+      transition: 'all 0.3s',
     }}>
       {/* Brand */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -42,10 +45,10 @@ const Navbar = () => {
           🚛
         </div>
         <div>
-          <div style={{ color: 'white', fontWeight: 700, fontSize: '0.95rem', letterSpacing: '-0.3px' }}>
+          <div style={{ color: colors.text, fontWeight: 700, fontSize: '0.95rem', letterSpacing: '-0.3px' }}>
             Ocean Insight Logistics
           </div>
-          <div style={{ color: '#475569', fontSize: '0.7rem', letterSpacing: '0.05em' }}>
+          <div style={{ color: colors.textMuted, fontSize: '0.7rem', letterSpacing: '0.05em' }}>
             FLEET MANAGEMENT
           </div>
         </div>
@@ -59,7 +62,7 @@ const Navbar = () => {
             to={link.path}
             style={{
               display: 'flex', alignItems: 'center', gap: '0.35rem',
-              color: location.pathname === link.path ? 'white' : '#64748b',
+              color: location.pathname === link.path ? 'white' : colors.textLight,
               textDecoration: 'none',
               padding: '0.4rem 0.75rem',
               borderRadius: '6px',
@@ -85,14 +88,31 @@ const Navbar = () => {
             borderRadius: '50%',
             boxShadow: '0 0 8px #22c55e',
           }} />
-          <span style={{ color: '#64748b', fontSize: '0.8rem' }}>Live</span>
+          <span style={{ color: colors.textLight, fontSize: '0.8rem' }}>Live</span>
         </div>
+
+        {/* Theme Toggle */}
+        <button
+          onClick={toggleTheme}
+          style={{
+            width: '36px', height: '36px',
+            borderRadius: '8px',
+            border: `1px solid ${colors.border}`,
+            background: colors.cardBg2,
+            color: colors.text,
+            cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            transition: 'all 0.2s',
+          }}
+        >
+          {isDark ? <Sun size={16} color="#fbbf24" /> : <Moon size={16} color="#3b82f6" />}
+        </button>
 
         {/* Mobile menu button */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           style={{
-            background: 'none', border: 'none', color: 'white',
+            background: 'none', border: 'none', color: colors.text,
             cursor: 'pointer', display: 'none',
           }}
           className="mobile-menu-btn"
@@ -105,7 +125,7 @@ const Navbar = () => {
       {menuOpen && (
         <div style={{
           position: 'absolute', top: '64px', left: 0, right: 0,
-          background: '#0a0f1e', borderBottom: '1px solid #1e293b',
+          background: colors.navBg, borderBottom: `1px solid ${colors.border}`,
           padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem',
           zIndex: 999,
         }}>
@@ -116,7 +136,7 @@ const Navbar = () => {
               onClick={() => setMenuOpen(false)}
               style={{
                 display: 'flex', alignItems: 'center', gap: '0.75rem',
-                color: location.pathname === link.path ? 'white' : '#64748b',
+                color: location.pathname === link.path ? 'white' : colors.textLight,
                 textDecoration: 'none',
                 padding: '0.75rem 1rem',
                 borderRadius: '8px',
