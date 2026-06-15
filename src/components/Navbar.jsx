@@ -79,19 +79,20 @@ const Navbar = () => {
         ))}
       </div>
 
-      {/* Right side */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-          <div style={{
-            width: '8px', height: '8px',
-            backgroundColor: '#22c55e',
-            borderRadius: '50%',
-            boxShadow: '0 0 8px #22c55e',
-          }} />
-          <span style={{ color: colors.textLight, fontSize: '0.8rem' }}>Live</span>
-        </div>
+     {/* Right side */}
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      {/* Live indicator - hide on very small screens */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+        <div style={{
+          width: '8px', height: '8px',
+          backgroundColor: '#22c55e',
+          borderRadius: '50%',
+          boxShadow: '0 0 8px #22c55e',
+        }} />
+        <span style={{ color: colors.textLight, fontSize: '0.8rem' }}>Live</span>
+      </div>
 
-        {/* Theme Toggle */}
+  {/* Theme Toggle - always visible */}
         <button
           onClick={toggleTheme}
           style={{
@@ -103,24 +104,24 @@ const Navbar = () => {
             cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             transition: 'all 0.2s',
+            flexShrink: 0,
           }}
         >
           {isDark ? <Sun size={16} color="#fbbf24" /> : <Moon size={16} color="#3b82f6" />}
         </button>
 
-        {/* Mobile menu button */}
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          style={{
-            background: 'none', border: 'none', color: colors.text,
-            cursor: 'pointer', display: 'none',
-          }}
-          className="mobile-menu-btn"
-        >
-          {menuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </div>
-
+  {/* Mobile menu button - always visible on mobile */}
+  <button
+    onClick={() => setMenuOpen(!menuOpen)}
+    style={{
+      background: 'none', border: 'none', color: colors.text,
+      cursor: 'pointer', display: 'none', flexShrink: 0,
+    }}
+    className="mobile-menu-btn"
+  >
+    {menuOpen ? <X size={24} /> : <Menu size={24} />}
+  </button>
+</div>
       {/* Mobile Menu */}
       {menuOpen && (
         <div style={{
