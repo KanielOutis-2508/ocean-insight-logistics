@@ -12,7 +12,7 @@ import './App.css';
 const App = () => {
   return (
     <Router>
-      <div style={{ minHeight: '100vh', backgroundColor: '#060d1f' }}>
+      <div style={{ minHeight: '100vh' }}>
         <Navbar />
         <Routes>
           <Route path="/" element={<Dashboard />} />
