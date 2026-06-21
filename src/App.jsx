@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import Quote from './pages/Quote';
 import Navbar from './components/Navbar';
 import Dashboard from './pages/Dashboard';
 import Trips from './pages/Trips';
@@ -43,6 +44,7 @@ const AppContent = () => {
       <Navbar user={user} onLogout={logout} />
       <Routes>
         <Route path="/track" element={<Track />} />
+        <Route path="/quote" element={<Quote />} />
         <Route path="/" element={user.role === 'manager' ? <Dashboard /> : <Navigate to="/trips" />} />
         <Route path="/trips" element={<Trips />} />
         <Route path="/trucks" element={user.role === 'manager' ? <Trucks /> : <Navigate to="/trips" />} />
